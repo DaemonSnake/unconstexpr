@@ -26,6 +26,9 @@
 #include <type_traits>
 #include <string>
 #include <regex>
+#include <algorithm>
+
+using namespace std::literals;
 
 namespace printer
 {
@@ -43,6 +46,36 @@ namespace printer
                 if (open++ == 0)
                     b = i;
         return name.substr(0, b);
+    }
+
+    inline bool char_to_string(char c, std::string &res)
+    {
+        if ((c >= 1 && c <= 6) || (c >= 14 && c <= 31) || c == 127)
+            return false;
+        if (c >= ' ')
+            res = "'"s + c + "'";
+        else
+        {
+            res = "'\\"s + std::map<char, char>({
+                    {'\0', '0'}, {'\a', 'a'}, {'\b', 'b'}, {'\t', 't'}, {'\n', 'n'}, {'\v', 'v'}, {'\f', 'f'}, {'\r', 'r'}
+                })[c] + '\'';
+        }
+        return true;
+    }
+
+    inline void charcast_replace(std::string &str)
+    {
+        size_t index = 0;
+        const std::string motif = "(char)";
+        while ((index = str.find(motif, index)) != std::string::npos)
+        {
+            size_t end = 0;
+            std::string with;
+            if (char_to_string((char)std::stoi(&str[index + motif.size()], &end), with)) {
+                str.replace(index, motif.size() + end, with);
+                index -= ((motif.size() + end) - with.size());
+            }
+        }
     }
 
     template <class T = NoPrint>
@@ -67,6 +100,7 @@ namespace printer
                 n += 0;
             }
         }
+        charcast_replace(true_name);
         std::cout <<  true_name;
         if (!namespe.empty())
             std::cout << std::endl << "(:: ==> " + namespe + ")";

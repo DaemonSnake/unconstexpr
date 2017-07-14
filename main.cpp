@@ -48,15 +48,19 @@ void test_var()
     
     println(var::value());
     var::set<5>();
+    static_assert(var::value() == 5);
     println(var::value());
     var::op<'+', 5>();
     println(var::value());
+    static_assert(var::value() == 10);
     var::op<'*', 2>();
     println(var::value());
+    static_assert(var::value() == 20);
     var::apply([](int i) {
             return i * i;
         });
     println(var::value());
+    static_assert(var::value() == 400);
 }
 
 void test_list()
