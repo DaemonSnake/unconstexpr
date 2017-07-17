@@ -60,7 +60,7 @@ struct TestLogger final
     struct Adder
     {
         Adder() { units.push_back(*this); }
-        void operator()() const { static_cast<void(*)(TestLogger)>(unit)(TestLogger()); }
+        void operator()() const { unit(TestLogger()); }
     };
 
     static constexpr Char repr[] = {chars..., '\0'};
