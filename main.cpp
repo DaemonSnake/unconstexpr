@@ -22,7 +22,8 @@
 #include "meta_counter.hpp"
 #include "meta_var.hpp"
 #include "meta_type.hpp"
-#include "meta_list.hpp"
+#include "meta_tlist.hpp"
+#include "meta_vlist.hpp"
 #include "meta_variant.hpp"
 using namespace unconstexpr;
 
@@ -59,9 +60,9 @@ new_unit("meta_var")
     static_assert(var::value() == 400);
 }
 
-new_unit("meta_list")
+new_unit("meta_tlist")
 {
-    using list = meta_list<>;
+    using list = meta_tlist<>;
 
     printType(list::current_type<>);
     list::push_front<int>();
@@ -69,6 +70,28 @@ new_unit("meta_list")
     printType(list::current_type<>);
     list::remove<-1>();
     printType(list::item<0>);
+}
+
+static constexpr int i = 0, j = 25;
+
+new_unit("meta_vlist")
+{
+    using list = meta_vlist<>;
+
+    printType(list::current_type<>);
+    list::push_back<&i, 52>();
+    printType(list::current_type<>);
+    list::push_back<&i, 52>();
+    printType(list::current_type<>);
+    println(list::item<0>, list::item<1>);
+    constexpr auto v = list::value_transfer<std::tuple>();
+    printType(decltype(v));
+    list::clear();
+    printType(decltype(list::value_transfer<std::tuple>()));
+    list::push_front<42>();
+    println(list::item<0>);
+    // list::foreach;
+    // std::apply;
 }
 
 new_unit("meta_variant")
@@ -85,9 +108,6 @@ new_unit("meta_variant")
     printType(decltype(v::value<>));
 
     println(v::change<int>(), make_type_printer<decltype(v::value<>)>());
-    // v::change<int>();
-    // println(v::value<>);
-    // printType(decltype(v::value<>));
 }
 
 int main ()

@@ -23,14 +23,14 @@
 #pragma once
 
 #include "meta_type.hpp"
-#include "type_list.hpp"
+#include "tools/type_list.hpp"
 
 namespace unconstexpr
 {
     template <class Id = void>
-    class meta_list
+    class meta_tlist
     {
-        using parent = meta_type<detail::type_list<>, meta_list<Id>>;
+        using parent = meta_type<detail::type_list<>, meta_tlist<Id>>;
 
     public:
         template <class current = typename parent::template type<>>

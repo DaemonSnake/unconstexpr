@@ -59,5 +59,11 @@ namespace unconstexpr
         {
             return 0;
         }
+
+        template <int index = counter::value()>
+        static constexpr int counter_value()
+        {
+            return index;
+        }
     };
 }
