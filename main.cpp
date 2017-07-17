@@ -104,6 +104,7 @@ new_unit("meta_variant")
     printType(decltype(v::value<>));
     
     v::change<double>(3.14);
+    static_assert(std::is_same_v<double, decltype(v::value<>)>);
     println(v::value<>);
     printType(decltype(v::value<>));
 
