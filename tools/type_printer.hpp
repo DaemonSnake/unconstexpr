@@ -30,56 +30,59 @@
 
 using namespace std::literals;
 
-namespace printer
+class NoPrint {};
+
+inline std::string find_class_name(std::string const &name)
 {
-    class NoPrint {};
+    std::size_t b = name.size();
+    std::size_t open = 0;
 
-    inline std::string find_class_name(std::string const &name)
+    for (std::size_t i = 0; i < name.size(); i++)
+        if (name[i] == '>')
+            --open;
+        else if (name[i] == '<')
+            if (open++ == 0)
+                b = i;
+    return name.substr(0, b);
+}
+
+inline bool char_to_string(char c, std::string &res)
+{
+    if ((c >= 1 && c <= 6) || (c >= 14 && c <= 31) || c == 127)
+        return false;
+    if (c >= ' ')
+        res = "'"s + c + "'";
+    else
     {
-        std::size_t b = name.size();
-        std::size_t open = 0;
-
-        for (std::size_t i = 0; i < name.size(); i++)
-            if (name[i] == '>')
-                --open;
-            else if (name[i] == '<')
-                if (open++ == 0)
-                    b = i;
-        return name.substr(0, b);
+        res = "'\\"s + std::map<char, char>({
+                {'\0', '0'}, {'\a', 'a'}, {'\b', 'b'}, {'\t', 't'}, {'\n', 'n'}, {'\v', 'v'}, {'\f', 'f'}, {'\r', 'r'}
+            })[c] + '\'';
     }
+    return true;
+}
 
-    inline bool char_to_string(char c, std::string &res)
+inline void charcast_replace(std::string &str)
+{
+    size_t index = 0;
+    const std::string motif = "(char)";
+    while ((index = str.find(motif, index)) != std::string::npos)
     {
-        if ((c >= 1 && c <= 6) || (c >= 14 && c <= 31) || c == 127)
-            return false;
-        if (c >= ' ')
-            res = "'"s + c + "'";
-        else
-        {
-            res = "'\\"s + std::map<char, char>({
-                    {'\0', '0'}, {'\a', 'a'}, {'\b', 'b'}, {'\t', 't'}, {'\n', 'n'}, {'\v', 'v'}, {'\f', 'f'}, {'\r', 'r'}
-                })[c] + '\'';
-        }
-        return true;
-    }
-
-    inline void charcast_replace(std::string &str)
-    {
-        size_t index = 0;
-        const std::string motif = "(char)";
-        while ((index = str.find(motif, index)) != std::string::npos)
-        {
-            size_t end = 0;
-            std::string with;
-            if (char_to_string((char)std::stoi(&str[index + motif.size()], &end), with)) {
-                str.replace(index, motif.size() + end, with);
-                index -= ((motif.size() + end) - with.size());
-            }
+        size_t end = 0;
+        std::string with;
+        if (char_to_string((char)std::stoi(&str[index + motif.size()], &end), with)) {
+            str.replace(index, motif.size() + end, with);
+            index -= ((motif.size() + end) - with.size());
         }
     }
+}
 
-    template <class T = NoPrint>
-    void type_printer()
+template <class T = NoPrint, bool new_line = true>
+struct TypePrinter {};
+
+template <class T, bool new_line>
+std::ostream& operator<<(std::ostream &stream, TypePrinter<T, new_line>)
+{
+    if constexpr (!std::is_same_v<T, NoPrint>)
     {
         int status = -4;
         const char *name = typeid(T).name();
@@ -101,19 +104,27 @@ namespace printer
             }
         }
         charcast_replace(true_name);
-        std::cout <<  true_name;
+        stream <<  true_name;
         if (!namespe.empty())
-            std::cout << std::endl << "(:: ==> " + namespe + ")";
-        std::cout << std::endl;
+            stream << " (:: ==> " + namespe + ")";
     }
+    if constexpr (new_line) stream << std::endl;
+    return stream;
+}
 
-    template <>
-    inline void type_printer<NoPrint>() {
-        printf("\n");
-    }
+template <class T = NoPrint, bool new_line = true>
+void type_printer()
+{
+    std::cout << TypePrinter<T, new_line>();
+}
 
-    template <class T>
-    void make_type_printer(T const &) {
-        type_printer<T>();
-    }
+template <class T, bool new_line = true>
+void make_type_printer(T const &) {
+    type_printer<T, new_line>();
+}
+
+template <class T, bool new_line = false>
+auto make_type_printer()
+{
+    return TypePrinter<T, new_line>();
 }

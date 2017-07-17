@@ -19,20 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <iostream>
-#include "type_printer.hpp"
 #include "meta_counter.hpp"
 #include "meta_var.hpp"
 #include "meta_type.hpp"
 #include "meta_list.hpp"
-
+#include "meta_variant.hpp"
 using namespace unconstexpr;
-using namespace printer;
 
-#define printType(x) type_printer<typename x>()
-#define println(x) std::cout << x << std::endl
+#include "tools/log.hpp"
 
-void test_counter()
+new_unit("meta_counter")
 {
     using counter = meta_counter<>;
     
@@ -42,7 +38,7 @@ void test_counter()
     println(counter::next());
 }
 
-void test_var()
+new_unit("meta_var")
 {
     using var = meta_var<int>;
     
@@ -63,7 +59,7 @@ void test_var()
     static_assert(var::value() == 400);
 }
 
-void test_list()
+new_unit("meta_list")
 {
     using list = meta_list<>;
 
@@ -75,9 +71,27 @@ void test_list()
     printType(list::item<0>);
 }
 
+new_unit("meta_variant")
+{
+    struct tag {};
+    using v = meta_variant<int, tag>;
+
+    v::value<> = 5;
+    println(v::value<>);
+    printType(decltype(v::value<>));
+    
+    v::change<double>(3.14);
+    println(v::value<>);
+    printType(decltype(v::value<>));
+
+    println(v::change<int>(), make_type_printer<decltype(v::value<>)>());
+    // v::change<int>();
+    // println(v::value<>);
+    // printType(decltype(v::value<>));
+}
+
 int main ()
 {
-    test_counter();
-    test_var();
-    test_list();
+    for (const auto &tests: units)
+        tests();
 }
