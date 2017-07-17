@@ -62,7 +62,7 @@ namespace unconstexpr::detail
     public:
         template <size_t From, size_t Len, class Indexs = std::make_index_sequence<Len>>
         using select = typename Select<From, Indexs>::type;
-        
+
         template <class... NewArgs>
         using push_front = type_list<NewArgs..., Args...>;
 

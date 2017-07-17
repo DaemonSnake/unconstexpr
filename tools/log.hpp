@@ -65,7 +65,7 @@ struct TestLogger final
 
     static constexpr Char repr[] = {chars..., '\0'};
     static inline auto adder = Adder();
-    
+
     TestLogger() { Println("TESTING", std::string(repr) + ':'); }
     ~TestLogger() { Println(); }
 };

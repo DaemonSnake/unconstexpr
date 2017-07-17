@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2017  Bastien Penavayre
  *                     Filip Roséen <filip.roseen@gmail.com>
- *                              http://b.atch.se/posts/constexpr-meta-container 
+ *                              http://b.atch.se/posts/constexpr-meta-container
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ namespace unconstexpr
             {
                 return N;
             }
-            
+
             static constexpr Type value = N;
         };
 

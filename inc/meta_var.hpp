@@ -36,7 +36,7 @@ namespace unconstexpr
         {
             friend constexpr Type adl_flag(flag<N>);
         };
-    
+
         template <Type V, int N>
         struct writer
         {
@@ -71,7 +71,7 @@ namespace unconstexpr
                           "operator not supported");
             static_assert((Op == '/' && NewValue != 0) || Op != '/',
                           "floating point exception");
-        
+
             Type tmp = Value;
             if (Op == '+')
                 tmp += NewValue;

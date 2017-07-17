@@ -47,7 +47,7 @@ namespace unconstexpr
         template <size_t N = 1> static constexpr void
         pop_front(int = parent::template change<typename current_type<>::template
                   pop_front<N>>()) {}
-    
+
         template <size_t N = 1> static constexpr void
         pop_back(int = parent::template change<typename current_type<>::template
                  pop_back<N>>()) {}
@@ -62,7 +62,7 @@ namespace unconstexpr
         template <class OtherTypeList> static constexpr void
         insert_list(int = parent::template change<typename current_type<>::template
                     merge<OtherTypeList>>()) {}
-        
+
         static constexpr void clear(int = parent::template change<detail::type_list<>>()) {}
 
         template <size_t From, size_t Len> static constexpr void

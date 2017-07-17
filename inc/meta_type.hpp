@@ -44,7 +44,7 @@ namespace unconstexpr
             {
                 return NewType{};
             }
-            
+
             using type = NewType;
         };
 
