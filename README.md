@@ -21,15 +21,16 @@ using namespace unconstexpr;
 
 int main()
 {
-    using var = meta_variant<int>;
-    var::value<> = 35;
-    println(var::value<>); //35
-    var::change(3.14);
-    println(var::value<>); //3.14
-    prnitType(decltype(var::value<>)); // double
-    var::change<int>();
-    println(var::value<>); //35
-    prnitType(decltype(var::value<>)); // int
+    meta_variant<int> var;
+    var = 35;
+    println(*var); //35
+    var = 3.14;
+    println(*var); //3.14
+    prnitType(decltype(*var)); // double&
+    var = "word"s;
+    println(*var>); //word
+    prnitType(decltype(*var)); // std::string&
+    std::cout << var << std::endl; //provides an operator<<
 }
 ```
 ### compile time variant variable
