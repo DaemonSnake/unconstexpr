@@ -29,6 +29,12 @@ using namespace unconstexpr;
 
 #include "tools/log.hpp"
 
+int main ()
+{
+    for (const auto &tests: units)
+        tests();
+}
+
 new_unit("meta_counter")
 {
     using counter = meta_counter<>;
@@ -94,7 +100,7 @@ new_unit("meta_vlist")
     // std::apply;
 }
 
-new_unit("meta_variant")
+new_unit("meta_variant by type")
 {
     struct tag {};
     using v = meta_variant<int, tag>;
@@ -111,8 +117,19 @@ new_unit("meta_variant")
     println(v::change<int>(), make_type_printer<decltype(v::value<>)>());
 }
 
-int main ()
+new_unit("meta_variant by value")
 {
-    for (const auto &tests: units)
-        tests();
+    struct tag {};
+    meta_variant<int, tag> v;
+
+    v = 5;
+    println(*v, make_type_printer<decltype(*v)>());
+    static_assert(std::is_same_v<int&, decltype(*v)>);
+    v = 3.14;
+    println(*v, make_type_printer<decltype(*v)>());
+    static_assert(std::is_same_v<double&, decltype(*v)>);
+    v = "Hello"s;
+    println(*v, make_type_printer<decltype(*v)>());
+    static_assert(std::is_same_v<std::string&, decltype(*v)>);
+    std::cout << "\"operator<<\" test: " << v << std::endl;
 }
