@@ -14,11 +14,28 @@ int main()
     static_assert(i != counter::value(), "Will not fire");
 }
 ```
+### compile time variant
+```c++
+#include "inc/meta_variant.hpp"
+using namespace unconstexpr;
+
+int main()
+{
+    using var = meta_variant<int>;
+    var::value<> = 35;
+    println(var::value<>); //35
+    var::change(3.14);
+    println(var::value<>); //3.14
+    prnitType(decltype(var::value<>)); // double
+    var::change<int>();
+    println(var::value<>); //35
+    prnitType(decltype(var::value<>)); // int
+}
+```
 ### compile time variant variable
 ```c++
 #include "inc/meta_var.hpp"
 using namespace unconstexpr;
-//println see main.cpp
 
 int main()
 {
@@ -40,9 +57,8 @@ int main()
 
 ## compile time variant type list
 ```c++
-#include "inc/meta_list.hpp"
+#include "inc/meta_tlist.hpp"
 using namespace unconstexpr;
-//printType see main.cpp
 
 int main()
 {
@@ -54,5 +70,23 @@ int main()
     printType(list::current_type<>); //type_list<int, double>
     list::remove<0>();
     printType(list::item<0>); //double
+}
+```
+
+## compile time value type list
+```c++
+#include "inc/meta_vlist.hpp"
+using namespace unconstexpr;
+
+int main()
+{
+    using list = meta_vlist<>;
+    
+    printType(list::current_type<>); //var_list<>
+    list::push_front<42>();
+    list::push_front<nullptr>();
+    printType(list::current_type<>); //var_list<42, nullptr>
+    list::remove<0>();
+    printType(list::item<0>); //nullptr
 }
 ```
