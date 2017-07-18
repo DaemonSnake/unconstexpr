@@ -32,19 +32,34 @@ namespace unconstexpr
         using type = meta_type<StartType, meta_variant>;
 
     public:
-        template <class T = typename type::template type<>>
-            static inline T value;
+        template <class T = typename type::template type<> >
+        static inline T value;
 
-        template <class T, int res = type::template change<T>()>
+        template <class T, int = type::template change<T>()>
         static constexpr T change()
         {
             return value<T>;
         }
 
-        template <class T, int res = type::template change<T>()>
+        template <class T, int = type::template change<T>()>
         static constexpr T change(T const &new_value)
         {
             return (value<T> = new_value);
+        }
+
+        template <size_t = type::counter_value()>
+        constexpr auto &operator*() const {
+            return value<>;
+        }
+
+        template <class T, int = type::template change<T>()>
+        constexpr auto &operator=(T const &new_value) const {
+            return (value<T> = new_value);
+        }
+
+        template <class T, int = type::counter_value()>
+        friend T &operator<<(T &stream, meta_variant const &) {
+            return stream << meta_variant::value<>;
         }
     };
 }
