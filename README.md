@@ -1,5 +1,13 @@
 # unconstexpr
-a c++17 header library that implements variant constexpr functions and types.
+#### An ODR violation story
+a c++17 header library that implements variant constexpr functions and types.</br>
+Disclaimer: This project only targets G++ and is only for fun.<br>
+
+### template instanciation uniqueness
+All meta_X templated types provided by this library have unique template instanciation.
+```c++
+static_assert(!std::is_same_v<meta_X<>, meta_X<>>, "Will not fire");
+```
 
 ### compile time counter
 ```c++
@@ -8,7 +16,7 @@ using namespace unconstexpr;
 
 int main()
 {
-    using counter = meta_counter<void>;
+    using counter = meta_counter<>;
     constexpr int i = counter::value(); // 0
     counter::next(); // 1
     static_assert(i != counter::value(), "Will not fire");
@@ -26,10 +34,10 @@ int main()
     println(*var); //35
     var = 3.14;
     println(*var); //3.14
-    prnitType(decltype(*var)); // double&
+    printType(decltype(*var)); // double&
     var = "word"s;
     println(*var>); //word
-    prnitType(decltype(*var)); // std::string&
+    printType(decltype(*var)); // std::string&
     std::cout << var << std::endl; //provides an operator<<
 }
 ```
