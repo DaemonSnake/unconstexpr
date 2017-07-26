@@ -1,0 +1,5 @@
+meta_tlist or meta_vlist:
+    foreach, apply
+
+meta_vlist:
+    add initialize method or a better transfer ( std::array )
