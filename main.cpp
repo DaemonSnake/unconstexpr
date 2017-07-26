@@ -31,6 +31,13 @@ using namespace unconstexpr;
 
 int main ()
 {
+    static_assert(!std::is_same_v<meta_counter<>, meta_counter<>>);
+    static_assert(!std::is_same_v<meta_var<int>, meta_var<int>>);
+    static_assert(!std::is_same_v<meta_type<int>, meta_type<int>>);
+    static_assert(!std::is_same_v<meta_tlist<>, meta_tlist<>>);
+    static_assert(!std::is_same_v<meta_vlist<>, meta_vlist<>>);
+    static_assert(!std::is_same_v<meta_variant<int>, meta_variant<int>>);
+
     for (const auto &tests: units)
         tests();
 }
@@ -38,7 +45,7 @@ int main ()
 new_unit("meta_counter")
 {
     using counter = meta_counter<>;
-    
+
     println(counter::value());
     println(counter::next());
     println(counter::next());
@@ -102,8 +109,7 @@ new_unit("meta_vlist")
 
 new_unit("meta_variant by type")
 {
-    struct tag {};
-    using v = meta_variant<int, tag>;
+    using v = meta_variant<int>;
 
     v::value<> = 5;
     println(v::value<>);
@@ -119,8 +125,7 @@ new_unit("meta_variant by type")
 
 new_unit("meta_variant by value")
 {
-    struct tag {};
-    meta_variant<int, tag> v;
+    meta_variant<int> v;
 
     v = 5;
     println(*v, make_type_printer<decltype(*v)>());

@@ -27,10 +27,10 @@
 
 namespace unconstexpr
 {
-    template <class Id = void>
+    template <class Id = void, unsigned = uniq_value::value<> >
     class meta_vlist
     {
-        using parent = meta_type<detail::var_list<>, meta_vlist<Id>>;
+        using parent = meta_type<detail::var_list<>, meta_vlist, 0>;
 
         template <auto... Args>
         struct ValueHolder

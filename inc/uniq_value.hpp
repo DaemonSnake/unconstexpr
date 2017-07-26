@@ -20,46 +20,44 @@
  * THE SOFTWARE.
  */
 
-#pragma once
-
-#include "meta_type.hpp"
-
 namespace unconstexpr
 {
-    template <class StartType, class Id = void, unsigned = uniq_value::value<> >
-    class meta_variant
+    class uniq_value
     {
-        using type = meta_type<StartType, meta_variant, 0>;
+        struct detail
+        {
+            template <unsigned N>
+            struct flag
+            {
+                friend constexpr bool adl_flag(flag<N>);
+            };
+        
+            template <unsigned N>
+            struct writer
+            {
+                friend constexpr bool adl_flag(flag<N>)
+                {
+                    return true;
+                }
+
+                static constexpr unsigned value = N;
+            };
+
+            template <unsigned N = 0, bool = adl_flag(flag<N>{})>
+            static constexpr unsigned reader(int, unsigned R = reader<N+1>(0))
+            {
+                return R;
+            }
+
+            template <unsigned N = 0>
+            static constexpr unsigned reader(float)
+            {
+                return writer<N>::value;
+            }
+        };
 
     public:
-        template <class T = typename type::template type<> >
-        static inline T value;
-
-        template <class T, int = type::template change<T>()>
-        static constexpr T change()
-        {
-            return value<T>;
-        }
-
-        template <class T, int = type::template change<T>()>
-        static constexpr T change(T const &new_value)
-        {
-            return (value<T> = new_value);
-        }
-
-        template <size_t = type::counter_value()>
-        constexpr auto &operator*() const {
-            return value<>;
-        }
-
-        template <class T, int = type::template change<T>()>
-        constexpr auto &operator=(T const &new_value) const {
-            return (value<T> = new_value);
-        }
-
-        template <class T, int = type::counter_value()>
-        friend T &operator<<(T &stream, meta_variant const &) {
-            return stream << meta_variant::value<>;
-        }
+        template <unsigned N = detail::reader(0)>
+        static constexpr unsigned value = N;
     };
 }

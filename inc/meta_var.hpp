@@ -27,10 +27,11 @@
 
 namespace unconstexpr
 {
-    template <class Type, class Id = void, Type Start = Type{0}>
+    template <class Type, Type Start = Type{0},
+              class Id = void, unsigned = uniq_value::value<> >
     class meta_var
     {
-        using counter = meta_counter<meta_var<Type, Id, Start>>;
+        using counter = detail::meta_counter<meta_var>;
 
         template <int N> struct flag
         {

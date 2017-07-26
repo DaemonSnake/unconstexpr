@@ -24,51 +24,61 @@
 
 #pragma once
 
+#include "uniq_value.hpp"
+
 namespace unconstexpr
 {
-    template <class Tag = void, class Type = int, Type Start = 0, Type Step = 1>
-    class meta_counter
+    namespace detail
     {
-        template<Type N>
-        struct flag
+        template <class Tag = void, class Type = unsigned, Type Start = 0, Type Step = 1>
+        class meta_counter
         {
-            friend constexpr Type adl_flag (flag<N>);
-        };
-
-        template<Type N>
-        struct writer
-        {
-            friend constexpr Type adl_flag (flag<N>)
+            template<Type N>
+            struct flag
             {
-                return N;
+                friend constexpr Type adl_flag (flag<N>);
+            };
+
+            template<Type N>
+            struct writer
+            {
+                friend constexpr Type adl_flag (flag<N>)
+                {
+                    return N;
+                }
+
+                static constexpr Type value = N;
+            };
+
+            template<Type N, Type ThisR = adl_flag (flag<N> {})>
+            static constexpr Type reader (int, flag<N>, Type R = reader(0, flag<N + Step>{}))
+            {
+                return (R != Start ? R : ThisR);
             }
 
-            static constexpr Type value = N;
+            template <Type N>
+            static constexpr Type reader(float, flag<N>)
+            {
+                return Start;
+            }
+
+        public:
+            template <Type = writer<Start>::value>
+            static constexpr Type value(Type R = reader(0, flag<Start>{}))
+            {
+                return R;
+            }
+
+            template <Type Value = value()>
+            static constexpr Type next(Type R = writer<Value + Step>::value)
+            {
+                return R;
+            }
         };
 
-        template<Type N, Type ThisR = adl_flag (flag<N> {})>
-        static constexpr Type reader (int, flag<N>, Type R = reader(0, flag<N + Step>{}))
-        {
-            return (R != Start ? R : ThisR);
-        }
+        template <unsigned> struct unique_type {};
+    }
 
-        template <Type N>
-        static constexpr Type reader(float, flag<N>)
-        {
-            return Start;
-        }
-
-    public:
-        template <Type = writer<Start>::value>
-        static constexpr Type value(Type R = reader(0, flag<Start>{}))
-        {
-            return R;
-        }
-
-        template <Type Value = value()>
-        static constexpr Type next(Type R = writer<Value + Step>::value)
-        {
-            return R;
-        }
-    };
+    template <class Type = int, Type Start = 0, Type It = 1, unsigned I = uniq_value::value<> >
+    using meta_counter = detail::meta_counter<detail::unique_type<I>, Type, Start, It>;
 }

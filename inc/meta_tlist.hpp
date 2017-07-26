@@ -27,10 +27,10 @@
 
 namespace unconstexpr
 {
-    template <class Id = void>
+    template <class Id = void, unsigned = uniq_value::value<> >
     class meta_tlist
     {
-        using parent = meta_type<detail::type_list<>, meta_tlist<Id>>;
+        using parent = meta_type<detail::type_list<>, meta_tlist, 0>;
 
     public:
         template <class current = typename parent::template type<>>
