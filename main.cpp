@@ -29,6 +29,8 @@ using namespace unconstexpr;
 
 #include "tools/log.hpp"
 
+void unit_launcher();
+
 int main ()
 {
     static_assert(!std::is_same_v<meta_counter<>, meta_counter<>>);
@@ -38,8 +40,7 @@ int main ()
     static_assert(!std::is_same_v<meta_vlist<>, meta_vlist<>>);
     static_assert(!std::is_same_v<meta_variant<int>, meta_variant<int>>);
 
-    for (const auto &tests: units)
-        tests();
+    unit_launcher();
 }
 
 new_unit("meta_counter")
@@ -137,4 +138,9 @@ new_unit("meta_variant by value")
     println(*v, make_type_printer<decltype(*v)>());
     static_assert(std::is_same_v<std::string&, decltype(*v)>);
     std::cout << "\"operator<<\" test: " << v << std::endl;
+}
+
+void unit_launcher()
+{
+    auto_testing::run(auto_testing::unit_list::current_type<>{});
 }

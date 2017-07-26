@@ -22,61 +22,65 @@
 
 #pragma once
 #include "type_printer.hpp"
-#include <list>
-#include <functional>
-#include <string_view>
+#include "meta_tlist.hpp"
 
 template <class T> void unit(T);
 
-template <bool started = false>
-struct Joiner
+namespace log
 {
-    template <class T>
-    Joiner<true> operator<<(T const &arg)
+    template <bool started = false>
+    struct Joiner
     {
-        if constexpr (started) std::cout << ' ';
-        std::cout << arg;
-        return {};
-    }
+        template <class T>
+        Joiner<true> operator<<(T const &arg)
+        {
+            if constexpr (started) std::cout << ' ';
+            std::cout << arg;
+            return {};
+        }
 
-    Joiner<false> operator<<(std::ostream &(*f)(std::ostream &))
-    {
-        std::cout << f;
-        return {};
-    }
-};
+        Joiner<false> operator<<(std::ostream &(*f)(std::ostream &))
+        {
+            std::cout << f;
+            return {};
+        }
+    };
+}
 
 template <class ...Args>
 void Println(Args&&... args)
 {
-    (Joiner<>() << ... << args) << std::endl;
+    (log::Joiner<>() << ... << args) << std::endl;
 }
 
-static inline std::list<std::function<void()>> units;
-
-template <class Char, Char... chars>
-struct TestLogger final
+namespace auto_testing
 {
-    struct Adder
+    using unit_list = unconstexpr::meta_tlist<>;
+
+    template <class Char, Char... chars>
+    struct TestLogger final
     {
-        Adder() { units.push_back(*this); }
-        void operator()() const { unit(TestLogger()); }
+        template <int = unit_list::push_back<TestLogger>()>
+            using pusher = TestLogger;
+
+        static void run() { unit(TestLogger{}); }
+        static constexpr Char repr[] = {chars..., '\0'};
+
+        TestLogger() { Println("TESTING", std::string(repr) + ':'); }
+        ~TestLogger() { Println(); }
     };
 
-    static constexpr Char repr[] = {chars..., '\0'};
-    static inline auto adder = Adder();
-
-    TestLogger() { Println("TESTING", std::string(repr) + ':'); }
-    ~TestLogger() { Println(); }
+    template <class... Args>
+    constexpr void run(detail::type_list<Args...>)
+    {
+        (Args::run(), ...);
+    }
 };
 
 template <class Char, Char... chars>
 constexpr auto operator""_logger_string() {
-    return TestLogger<Char, chars...>();
+    return (typename auto_testing::TestLogger<Char, chars...>::template pusher<>){};
 }
-
-template <class View>
-TestLogger(View const &) -> TestLogger<View>;
 
 #define printType(x) Println(make_type_printer<x, false>(), "<=", #x)
 #define new_unit(x) template <> void unit(decltype(x ## _logger_string))
