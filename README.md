@@ -1,7 +1,12 @@
 # unconstexpr
 #### An ODR violation story
-a c++17 header library that implements variant constexpr functions and types.</br>
-Disclaimer: This project only targets G++ and is only for fun.<br>
+a c++17 header library that implements variant constexpr functions and types.  
+
+
+__Disclaimer:__  
+This project only targets G++ and is only for fun.  
+It is inspired by Filip Roséen's blog http://b.atch.se/.  
+His blog is great go check it out for a c++ standart compilant implementation of some of the features of this library.  
 
 ### template instanciation uniqueness
 All meta_X templated types provided by this library have unique template instanciation.
