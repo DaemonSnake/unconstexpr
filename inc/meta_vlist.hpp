@@ -27,70 +27,72 @@
 
 namespace unconstexpr
 {
-    template <class Id = void, unsigned = uniq_value::value<> >
-    class meta_vlist
+    namespace detail
     {
-        using parent = meta_type<detail::var_list<>, meta_vlist, 0>;
-
         template <auto... Args>
         struct ValueHolder
         {
             constexpr ValueHolder(int) {}
             
-            template <template<class...> class NewHolder = std::tuple>
+            template <template<class...> class NewHolder>
             static constexpr NewHolder<decltype(Args)...> transfer()
             {
                 return {Args...};
             }
         };
+    }
+    
+    template <class Id = void, unsigned = uniq_value::value<> >
+    class meta_vlist
+    {
+        using parent = meta_type<detail::var_list<>, meta_vlist, 0>;
 
     public:
-        template <class current = typename parent::template type<>>
-            using current_type = current;
+        template <class current = typename parent::template type<> >
+        using current_type = current;
 
-        template <auto... NewArgs> static constexpr int
-        push_front(int = parent::template change<typename current_type<>::template
-                   push_front<NewArgs...>>()) { return 0; }
+        template <auto... NewArgs>
+        static constexpr int push_front(int = parent::template change<typename current_type<>::template
+                                        push_front<NewArgs...>>()) { return 0; }
 
-        template <auto... NewArgs> static constexpr int
-        push_back(int = parent::template change<typename current_type<>::template
-                  push_back<NewArgs...>>()) { return 0; }
+        template <auto... NewArgs>
+        static constexpr int push_back(int = parent::template change<typename current_type<>::template
+                                       push_back<NewArgs...>>()) { return 0; }
 
-        template <size_t N = 1> static constexpr int
-        pop_front(int = parent::template change<typename current_type<>::template
-                  pop_front<N>>()) { return 0; }
+        template <size_t N = 1>
+        static constexpr int pop_front(int = parent::template change<typename current_type<>::template
+                                       pop_front<N>>()) { return 0; }
 
-        template <size_t N = 1> static constexpr int
-        pop_back(int = parent::template change<typename current_type<>::template
-                 pop_back<N>>()) { return 0; }
+        template <size_t N = 1>
+        static constexpr int pop_back(int = parent::template change<typename current_type<>::template
+                                      pop_back<N>>()) { return 0; }
 
-        //change to function ??
-        template <size_t N, auto Ret = current_type<>::template item<N>>
+        template <size_t N, auto Ret = current_type<>::template item<N> >
         static constexpr auto item = Ret;
 
         template <template<auto...> class Holder,
-                  class Ret = typename current_type<>::template transfer<Holder>>
+                  class Ret = typename current_type<>::template transfer<Holder> >
         using transfer = Ret;
 
         template <template<class...> class Holder, size_t I = parent::counter_value()>
         static constexpr auto value_transfer()
         {
-            return current_type<>::template transfer<ValueHolder>::
+            return current_type<>::template transfer<detail::ValueHolder>::
                 template transfer<Holder>();
         }
         
-        template <class OtherTypeList> static constexpr int
-        insert_list(int = parent::template change<typename current_type<>::template
-                    merge<OtherTypeList>>()) { return 0; }
+        template <class OtherTypeList>
+        static constexpr int insert_list(int = parent::template change<typename current_type<>::template
+                                         merge<OtherTypeList>>()) { return 0; }
 
         static constexpr int clear(int = parent::template change<detail::var_list<>>()) { return 0; }
 
-        template <size_t From, size_t Len> static constexpr int
-        select(int = parent::template change<typename current_type<>::template
-               select<From, Len>>()) { return 0; }
+        template <size_t From, size_t Len>
+        static constexpr int select(int = parent::template change<typename current_type<>::template
+                                    select<From, Len>>()) { return 0; }
 
-        template <size_t Index> static constexpr int
-        remove(int = parent::template change<typename current_type<>::template
-               remove<Index>>()) { return 0; }
+        template <size_t Index>
+        static constexpr int remove(int = parent::template change<typename current_type<>::template
+                                    remove<Index>>()) { return 0; }
     };
 }

@@ -49,7 +49,8 @@ namespace unconstexpr
         };
 
         template <class NewType, int>
-        struct changer {
+        struct changer
+        {
             template <int index = counter::next(),
                       class Ret = typename writer<index, NewType>::type>
             static constexpr int change() { return 0; }
@@ -75,7 +76,8 @@ namespace unconstexpr
 
     private:
         template <int i>
-        struct changer<type<>, i> {
+        struct changer<type<>, i>
+        {
             static constexpr int change() { return 0; }
         };
     };
