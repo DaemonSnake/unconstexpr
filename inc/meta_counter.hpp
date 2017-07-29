@@ -36,30 +36,26 @@ namespace unconstexpr
             template<Type N>
             struct flag
             {
-                friend constexpr Type adl_flag (flag<N>);
+                friend constexpr bool adl_flag (flag<N>);
             };
 
             template<Type N>
             struct writer
             {
-                friend constexpr Type adl_flag (flag<N>)
-                {
-                    return N;
-                }
-
+                friend constexpr bool adl_flag (flag<N>) { return true; }
                 static constexpr Type value = N;
             };
 
-            template<Type N, Type ThisR = adl_flag (flag<N> {})>
+            template<Type N, bool = adl_flag(flag<N>{})>
             static constexpr Type reader (int, flag<N>, Type R = reader(0, flag<N + Step>{}))
             {
-                return (R != Start ? R : ThisR);
+                return R;
             }
 
             template <Type N>
             static constexpr Type reader(float, flag<N>)
             {
-                return Start;
+                return N - Step;
             }
 
         public:
