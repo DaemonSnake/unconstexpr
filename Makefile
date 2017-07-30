@@ -24,13 +24,13 @@ RM =		rm -f
 
 NAME =		test
 
-SRC =		main.cpp \
+SRC =		tests/main.cpp \
 
 OBJ =		$(SRC:.cpp=.o)
 
 COMMON =       	-W -Wall -Wextra -std=c++17
 
-CXXFLAGS =     	$(COMMON) -Iinc/
+CXXFLAGS =     	$(COMMON) -Iunconstexpr/
 
 LINKING =      	$(COMMON)
 
