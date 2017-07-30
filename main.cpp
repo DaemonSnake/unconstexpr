@@ -28,7 +28,7 @@
 
 using namespace unconstexpr;
 
-#include "tools/log.hpp"
+#include "tools/auto_testing.hpp"
 
 void unit_launcher();
 

@@ -21,10 +21,8 @@
  */
 
 #pragma once
-#include "type_printer.hpp"
-#include "meta_tlist.hpp"
 
-template <class T> void unit(T);
+#include "type_printer.hpp"
 
 namespace log
 {
@@ -45,43 +43,13 @@ namespace log
             return {};
         }
     };
-}
 
-template <class ...Args>
-void Println(Args&&... args)
-{
-    (log::Joiner<>() << ... << args) << std::endl;
-}
-
-namespace auto_testing
-{
-    using unit_list = unconstexpr::meta_tlist<>;
-
-    template <class Char, Char... chars>
-    struct TestLogger final
+    template <class ...Args>
+    void Println(Args&&... args)
     {
-        template <int = unit_list::push_back<TestLogger>()>
-            using pusher = TestLogger;
-
-        static void run() { unit(TestLogger{}); }
-        static constexpr Char repr[] = {chars..., '\0'};
-
-        TestLogger() { Println("TESTING", std::string(repr) + ':'); }
-        ~TestLogger() { Println(); }
-    };
-
-    template <class... Args>
-    constexpr void run(detail::type_list<Args...>)
-    {
-        (Args::run(), ...);
+        (log::Joiner<>() << ... << args) << std::endl;
     }
-};
-
-template <class Char, Char... chars>
-constexpr auto operator""_logger_string() {
-    return (typename auto_testing::TestLogger<Char, chars...>::template pusher<>){};
 }
 
-#define printType(x) Println(make_type_printer<x, false>(), "<=", #x)
-#define new_unit(x) template <> void unit(decltype(x ## _logger_string))
-#define println(args...) Println(args, "<=", #args)
+#define println(args...) log::Println(args, "<=", #args)
+#define printType(x) log::Println(make_type_printer<x, false>(), "<=", #x)
