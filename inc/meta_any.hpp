@@ -27,9 +27,9 @@
 namespace unconstexpr
 {
     template <class StartType, class Id = void, unsigned = uniq_value::value<> >
-    class meta_variant
+    class meta_any
     {
-        using type = meta_type<StartType, meta_variant, 0>;
+        using type = meta_type<StartType, meta_any, 0>;
 
     public:
         template <class T = typename type::template type<> >
@@ -58,8 +58,8 @@ namespace unconstexpr
         }
 
         template <class T, int = type::counter_value()>
-        friend T &operator<<(T &stream, meta_variant const &) {
-            return stream << meta_variant::value<>;
+        friend T &operator<<(T &stream, meta_any const &) {
+            return stream << meta_any::value<>;
         }
     };
 }

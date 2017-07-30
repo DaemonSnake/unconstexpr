@@ -29,12 +29,12 @@ int main()
 ```
 ### compile time variant
 ```c++
-#include "inc/meta_variant.hpp"
+#include "inc/meta_any.hpp"
 using namespace unconstexpr;
 
 int main()
 {
-    meta_variant<int> var;
+    meta_any<int> var;
     var = 35;
     println(*var); //35
     var = 3.14;

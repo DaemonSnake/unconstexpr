@@ -24,7 +24,7 @@
 #include "meta_type.hpp"
 #include "meta_tlist.hpp"
 #include "meta_vlist.hpp"
-#include "meta_variant.hpp"
+#include "meta_any.hpp"
 
 using namespace unconstexpr;
 
@@ -39,7 +39,7 @@ int main ()
     static_assert(!std::is_same_v<meta_type<int>, meta_type<int>>);
     static_assert(!std::is_same_v<meta_tlist<>, meta_tlist<>>);
     static_assert(!std::is_same_v<meta_vlist<>, meta_vlist<>>);
-    static_assert(!std::is_same_v<meta_variant<int>, meta_variant<int>>);
+    static_assert(!std::is_same_v<meta_any<int>, meta_any<int>>);
 
     unit_launcher();
 }
@@ -109,9 +109,9 @@ new_unit("meta_vlist")
     // std::apply;
 }
 
-new_unit("meta_variant by type")
+new_unit("meta_any by type")
 {
-    using v = meta_variant<int>;
+    using v = meta_any<int>;
 
     v::value<> = 5;
     println(v::value<>);
@@ -125,9 +125,9 @@ new_unit("meta_variant by type")
     println(v::change<int>(), make_type_printer<decltype(v::value<>)>());
 }
 
-new_unit("meta_variant by value")
+new_unit("meta_any by value")
 {
-    meta_variant<int> v;
+    meta_any<int> v;
 
     v = 5;
     println(*v, make_type_printer<decltype(*v)>());
