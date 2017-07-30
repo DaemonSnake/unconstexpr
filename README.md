@@ -41,7 +41,7 @@ int main()
     println(*var); //3.14
     printType(decltype(*var)); // double&
     var = "word"s;
-    println(*var>); //word
+    println(*var); //word
     printType(decltype(*var)); // std::string&
     std::cout << var << std::endl; //provides an operator<<
 }
