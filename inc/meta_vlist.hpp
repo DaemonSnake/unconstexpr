@@ -48,8 +48,8 @@ namespace unconstexpr
         using parent = meta_type<detail::var_list<>, meta_vlist, 0>;
 
     public:
-        template <class current = typename parent::template type<> >
-        using current_type = current;
+        template <class Current = typename parent::template type<> >
+        using current_type = Current;
 
         template <auto... NewArgs>
         static constexpr int push_front(int = parent::template change<typename current_type<>::template

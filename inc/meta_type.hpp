@@ -51,32 +51,32 @@ namespace unconstexpr
         template <class NewType, int>
         struct changer
         {
-            template <int index = counter::next(),
-                      class Ret = typename writer<index, NewType>::type>
+            template <int Index = counter::next(),
+                      class Ret = typename writer<Index, NewType>::type>
             static constexpr int change() { return 0; }
         };
 
     public:
         template <class = typename writer<0, StartType>::type,
-                  int index = counter::value()>
-        using type = decltype(adl_flag(flag<index>{}));
+                  int Index = counter::value()>
+        using type = decltype(adl_flag(flag<Index>{}));
 
-        template <class NewType, int index = counter::value(),
-                  int res = changer<NewType, index>::change()>
+        template <class NewType, int Index = counter::value(),
+                  int = changer<NewType, Index>::change()>
         static constexpr int change()
         {
             return 0;
         }
 
-        template <int index = counter::value()>
+        template <int Index = counter::value()>
         static constexpr int counter_value()
         {
-            return index;
+            return Index;
         }
 
     private:
-        template <int i>
-        struct changer<type<>, i>
+        template <int I>
+        struct changer<type<>, I>
         {
             static constexpr int change() { return 0; }
         };

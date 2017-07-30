@@ -51,14 +51,14 @@ namespace unconstexpr
 
     public:
 
-        template <Type = writer<Start, 0>::value, int index = counter::value()>
-        static constexpr Type value(Type R = adl_flag(flag<index>{}))
+        template <Type = writer<Start, 0>::value, int Index = counter::value()>
+        static constexpr Type value(Type R = adl_flag(flag<Index>{}))
         {
             return R;
         }
 
-        template <Type value, int index = counter::next()>
-        static constexpr Type set(Type R = writer<value, index>::value)
+        template <Type Value, int Index = counter::next()>
+        static constexpr Type set(Type R = writer<Value, Index>::value)
         {
             return R;
         }
@@ -117,10 +117,10 @@ namespace unconstexpr
             return R;
         }
 
-        template <int index = counter::value()>
+        template <int Index = counter::value()>
         static constexpr int counter_value()
         {
-            return index;
+            return Index;
         }
     };
 }
