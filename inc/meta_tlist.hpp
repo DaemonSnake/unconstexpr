@@ -72,5 +72,11 @@ namespace unconstexpr
         template <size_t Index>
         static constexpr int remove(int = parent::template change<typename current_type<>::template
                                     remove<Index>>()) { return 0; }
+
+        template <int Index = parent::counter_value()>
+        static constexpr int counter_value()
+        {
+            return Index;
+        }
     };
 }

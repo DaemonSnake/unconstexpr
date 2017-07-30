@@ -74,7 +74,7 @@ namespace unconstexpr
                   class Ret = typename current_type<>::template transfer<Holder> >
         using transfer = Ret;
 
-        template <template<class...> class Holder, size_t I = parent::counter_value()>
+        template <template<class...> class Holder, int = parent::counter_value()>
         static constexpr auto value_transfer()
         {
             return current_type<>::template transfer<detail::ValueHolder>::
@@ -94,5 +94,11 @@ namespace unconstexpr
         template <size_t Index>
         static constexpr int remove(int = parent::template change<typename current_type<>::template
                                     remove<Index>>()) { return 0; }
+
+        template <int Index = parent::counter_value()>
+        static constexpr int counter_value()
+        {
+            return Index;
+        }
     };
 }

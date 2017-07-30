@@ -47,7 +47,7 @@ namespace unconstexpr
             return (value<T> = new_value);
         }
 
-        template <size_t = type::counter_value()>
+        template <int = type::counter_value()>
         constexpr auto &operator*() const {
             return value<>;
         }

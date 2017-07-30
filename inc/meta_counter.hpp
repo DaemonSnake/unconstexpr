@@ -30,7 +30,7 @@ namespace unconstexpr
 {
     namespace detail
     {
-        template <class Tag = void, class Type = unsigned, Type Start = 0, Type Step = 1>
+        template <class Tag = void, class Type = int, Type Start = 0, Type Step = 1>
         class meta_counter
         {
             template<Type N>
