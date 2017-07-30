@@ -56,3 +56,4 @@ constexpr auto operator""_logger_string() {
 }
 
 #define new_unit(x) template <> void unit(decltype(x ## _logger_string))
+#define run_units_so_far() auto_testing::run(auto_testing::unit_list::current_type<>{})

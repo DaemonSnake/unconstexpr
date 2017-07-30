@@ -143,5 +143,5 @@ new_unit("meta_any by value")
 
 void unit_launcher()
 {
-    auto_testing::run(auto_testing::unit_list::current_type<>{});
+    run_units_so_far();
 }
