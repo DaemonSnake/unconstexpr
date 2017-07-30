@@ -38,10 +38,10 @@ int main()
     var = 35;
     println(*var); //35
     var = 3.14;
-    static_assert(is_same_v<decltype(*var), double&>);
+    type_printer<decltype(*var)>(); //double&
     println(*var); //3.14
     var = "word"s;
-    static_assert(is_same_v<decltype(*var), std::string&>);
+    type_printer<decltype(*var)>(); //std::string&
     println(*var); //word
     std::cout << var << std::endl; //provides an operator<<
 }
@@ -78,12 +78,12 @@ int main()
 {
     using list = meta_tlist<>;
 
-    printType(list::current_type<>); //type_list<>
+    type_printer<list::current_type<>>(); //type_list<>
     list::push_front<int>();
     list::push_front<double>();
-    printType(list::current_type<>); //type_list<int, double>
+    type_printer<list::current_type<>>(); //type_list<int, double>
     list::remove<0>();
-    printType(list::item<0>); //double
+    type_printer<list::item<0>>(); //double
 }
 ```
 
@@ -96,11 +96,11 @@ int main()
 {
     using list = meta_vlist<>;
     
-    printType(list::current_type<>); //var_list<>
+    type_printer<list::current_type<>>(); //var_list<>
     list::push_front<42>();
     list::push_front<nullptr>();
-    printType(list::current_type<>); //var_list<42, nullptr>
+    type_printer<list::current_type<>>(); //var_list<42, nullptr>
     list::remove<0>();
-    printType(list::item<0>); //nullptr
+    type_printer<list::item<0>>(); //nullptr_t
 }
 ```
