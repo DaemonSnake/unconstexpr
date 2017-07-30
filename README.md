@@ -27,7 +27,7 @@ int main()
     static_assert(i != counter::value(), "Will not fire");
 }
 ```
-### compile time variant
+### compile time type safe any
 ```c++
 #include "inc/meta_any.hpp"
 using namespace unconstexpr;
@@ -38,11 +38,11 @@ int main()
     var = 35;
     println(*var); //35
     var = 3.14;
+    static_assert(is_same_v<decltype(*var), double&>);
     println(*var); //3.14
-    printType(decltype(*var)); // double&
     var = "word"s;
+    static_assert(is_same_v<decltype(*var), std::string&>);
     println(*var); //word
-    printType(decltype(*var)); // std::string&
     std::cout << var << std::endl; //provides an operator<<
 }
 ```
