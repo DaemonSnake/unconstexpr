@@ -33,7 +33,7 @@ namespace unconstexpr
         struct ValueHolder
         {
             constexpr ValueHolder(int) {}
-            
+
             template <template<class...> class NewHolder>
             static constexpr NewHolder<decltype(Args)...> transfer()
             {

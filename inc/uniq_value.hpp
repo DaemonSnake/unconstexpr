@@ -24,18 +24,18 @@ namespace unconstexpr
 {
     class uniq_value
     {
-        struct detail
+        struct Detail
         {
             template <unsigned N>
-            struct flag
+            struct Flag
             {
-                friend constexpr bool adl_flag(flag<N>);
+                friend constexpr bool adl_flag(Flag<N>);
             };
         
             template <unsigned N>
-            struct writer
+            struct Writer
             {
-                friend constexpr bool adl_flag(flag<N>)
+                friend constexpr bool adl_flag(Flag<N>)
                 {
                     return true;
                 }
@@ -43,21 +43,21 @@ namespace unconstexpr
                 static constexpr unsigned value = N;
             };
 
-            template <unsigned N = 0, bool = adl_flag(flag<N>{})>
-            static constexpr unsigned reader(int, unsigned R = reader<N+1>(0))
+            template <unsigned N = 0, bool = adl_flag(Flag<N>{})>
+            static constexpr unsigned reader(int, unsigned r = reader<N+1>(0))
             {
-                return R;
+                return r;
             }
 
             template <unsigned N = 0>
             static constexpr unsigned reader(float)
             {
-                return writer<N>::value;
+                return Writer<N>::value;
             }
         };
 
     public:
-        template <unsigned N = detail::reader(0)>
+        template <unsigned N = Detail::reader(0)>
         static constexpr unsigned value = N;
     };
 }

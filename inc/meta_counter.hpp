@@ -34,41 +34,41 @@ namespace unconstexpr
         class meta_counter
         {
             template<Type N>
-            struct flag
+            struct Flag
             {
-                friend constexpr bool adl_flag (flag<N>);
+                friend constexpr bool adl_flag (Flag<N>);
             };
 
             template<Type N>
-            struct writer
+            struct Writer
             {
-                friend constexpr bool adl_flag (flag<N>) { return true; }
+                friend constexpr bool adl_flag (Flag<N>) { return true; }
                 static constexpr Type value = N;
             };
 
-            template<Type N, bool = adl_flag(flag<N>{})>
-            static constexpr Type reader (int, flag<N>, Type R = reader(0, flag<N + Step>{}))
+            template<Type N, bool = adl_flag(Flag<N>{})>
+            static constexpr Type reader (int, Flag<N>, Type r = reader(0, Flag<N + Step>{}))
             {
-                return R;
+                return r;
             }
 
             template <Type N>
-            static constexpr Type reader(float, flag<N>)
+            static constexpr Type reader(float, Flag<N>)
             {
                 return N - Step;
             }
 
         public:
-            template <Type = writer<Start>::value>
-            static constexpr Type value(Type R = reader(0, flag<Start>{}))
+            template <Type = Writer<Start>::value>
+            static constexpr Type value(Type r = reader(0, Flag<Start>{}))
             {
-                return R;
+                return r;
             }
 
             template <Type Value = value()>
-            static constexpr Type next(Type R = writer<Value + Step>::value)
+            static constexpr Type next(Type r = Writer<Value + Step>::value)
             {
-                return R;
+                return r;
             }
         };
 

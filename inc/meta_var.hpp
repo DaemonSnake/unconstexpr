@@ -33,15 +33,16 @@ namespace unconstexpr
     {
         using counter = detail::meta_counter<meta_var>;
 
-        template <int N> struct flag
+        template <int N>
+        struct Flag
         {
-            friend constexpr Type adl_flag(flag<N>);
+            friend constexpr Type adl_flag(Flag<N>);
         };
 
         template <Type V, int N>
-        struct writer
+        struct Writer
         {
-            friend constexpr Type adl_flag(flag<N>)
+            friend constexpr Type adl_flag(Flag<N>)
             {
                 return V;
             }
@@ -51,16 +52,16 @@ namespace unconstexpr
 
     public:
 
-        template <Type = writer<Start, 0>::value, int Index = counter::value()>
-        static constexpr Type value(Type R = adl_flag(flag<Index>{}))
+        template <Type = Writer<Start, 0>::value, int Index = counter::value()>
+        static constexpr Type value(Type r = adl_flag(Flag<Index>{}))
         {
-            return R;
+            return r;
         }
 
         template <Type Value, int Index = counter::next()>
-        static constexpr Type set(Type R = writer<Value, Index>::value)
+        static constexpr Type set(Type r = Writer<Value, Index>::value)
         {
-            return R;
+            return r;
         }
 
     private:
@@ -105,16 +106,16 @@ namespace unconstexpr
     public:
 
         template <char Op, Type NewValue, Type Value = value()>
-        static constexpr Type op(Type R = set<calc<Op, NewValue, Value>()>())
+        static constexpr Type op(Type r = set<calc<Op, NewValue, Value>()>())
         {
-            return R;
+            return r;
         }
 
         template <class T, Type Value = value()>
         static constexpr Type apply(const T &,
-                                    Type R = set<invoke_func_operator<T>(Value)>())
+                                    Type r = set<invoke_func_operator<T>(Value)>())
         {
-            return R;
+            return r;
         }
 
         template <int Index = counter::value()>

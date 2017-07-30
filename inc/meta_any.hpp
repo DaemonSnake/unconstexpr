@@ -42,9 +42,9 @@ namespace unconstexpr
         }
 
         template <class T, int = type::template change<T>()>
-        static constexpr T change(T const &new_value)
+        static constexpr T change(T const &newValue)
         {
-            return (value<T> = new_value);
+            return (value<T> = newValue);
         }
 
         template <int = type::counter_value()>
@@ -53,8 +53,8 @@ namespace unconstexpr
         }
 
         template <class T, int = type::template change<T>()>
-        constexpr auto &operator=(T const &new_value) const {
-            return (value<T> = new_value);
+        constexpr auto &operator=(T const &newValue) const {
+            return (value<T> = newValue);
         }
 
         template <class T, int = type::counter_value()>

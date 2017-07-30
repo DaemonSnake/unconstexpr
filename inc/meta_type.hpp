@@ -32,15 +32,15 @@ namespace unconstexpr
         using counter = detail::meta_counter<meta_type>;
 
         template <int N>
-        struct flag
+        struct Flag
         {
-            friend constexpr auto adl_flag(flag<N>);
+            friend constexpr auto adl_flag(Flag<N>);
         };
 
         template <int N, class NewType>
-        struct writer
+        struct Writer
         {
-            friend constexpr auto adl_flag(flag<N>)
+            friend constexpr auto adl_flag(Flag<N>)
             {
                 return NewType{};
             }
@@ -49,20 +49,20 @@ namespace unconstexpr
         };
 
         template <class NewType, int>
-        struct changer
+        struct Changer
         {
             template <int Index = counter::next(),
-                      class Ret = typename writer<Index, NewType>::type>
+                      class Ret = typename Writer<Index, NewType>::type>
             static constexpr int change() { return 0; }
         };
 
     public:
-        template <class = typename writer<0, StartType>::type,
+        template <class = typename Writer<0, StartType>::type,
                   int Index = counter::value()>
-        using type = decltype(adl_flag(flag<Index>{}));
+        using type = decltype(adl_flag(Flag<Index>{}));
 
         template <class NewType, int Index = counter::value(),
-                  int = changer<NewType, Index>::change()>
+                  int = Changer<NewType, Index>::change()>
         static constexpr int change()
         {
             return 0;
@@ -76,7 +76,7 @@ namespace unconstexpr
 
     private:
         template <int I>
-        struct changer<type<>, I>
+        struct Changer<type<>, I>
         {
             static constexpr int change() { return 0; }
         };
