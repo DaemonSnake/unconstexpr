@@ -1,0 +1,20 @@
+// calling conventions -*- C++ -*-
+
+namespace unconstexpr
+{
+    namespace detail
+    {
+        struct PrivateToolType {};
+        struct public_tool_type {};
+    }
+    
+    template <type NameArg>
+    struct snake_case
+    {
+        struct ToolType {};
+    };
+
+    using type_case = ...;
+
+    void method_or_function_name(type argumentName);
+}
