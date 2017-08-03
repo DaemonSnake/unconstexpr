@@ -28,19 +28,20 @@ namespace unconstexpr
 {
     namespace tools
     {
-        template <class T, class... Args,
-                  std::invoke_result_t<T, Args...> (T::*Func)(Args...) const = &T::operator()>
-        static constexpr auto invoke_func_operator(Args... args)
+        template <class T, class... Args>
+        static constexpr auto invoke_func_operator(Args&&... args)
         {
-            static_assert(sizeof(T) <= 1, "Type given holds require instance");
-            return (static_cast<T *>(nullptr)->*Func)(args...);
+            using type = std::remove_pointer_t<std::decay_t<T>>;
+            static_assert(sizeof(type) <= 1, "Type given requires instance");
+            return static_cast<const type *>(nullptr)->operator()(std::forward<Args>(args)...);
         }
 
         template <class T, class... Args>
-        static constexpr auto invoke_lambda_type(T, Args... args)
+        static constexpr auto invoke_lambda_type(T&&, Args&&... args)
         {
-            static_assert(sizeof(T) <= 1, "Lambda given captures values");
-            return invoke_func_operator<T>(std::forward<Args...>(args...));
+            using type = std::remove_pointer_t<std::decay_t<T>>;
+            static_assert(sizeof(type) <= 1, "Lambda given captures values");
+            return static_cast<const type*>(nullptr)->operator()(std::forward<Args>(args)...);
         }
     }
 }
