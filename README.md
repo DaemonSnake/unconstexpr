@@ -27,7 +27,7 @@ int main()
     static_assert(i != counter::value(), "Will not fire");
 }
 ```
-### compile time type safe any
+### compile time type-safe any
 ```c++
 #include "inc/meta_any.hpp"
 using namespace unconstexpr;
