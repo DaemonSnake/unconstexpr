@@ -55,17 +55,17 @@ int main()
 {
     using var = meta_var<int>;
     
-    println(var::value()); //0
+    static_assert(var::value() == 0);
     var::set<5>();
-    println(var::value()); //5
+    static_assert(var::value() == 5);
     var::op<'+', 5>();
-    println(var::value()); //10
+    static_assert(var::value() == 10);
     var::op<'*', 2>();
-    println(var::value()); //20
+    static_assert(var::value() == 20);
     var::apply([](int i) {
             return i * i;
         });
-    println(var::value()); //20²
+    static_assert(var::value() == 20*20);
 }
 ```
 
@@ -101,6 +101,6 @@ int main()
     list::push_front<nullptr>();
     type_printer<list::current_type<>>(); //var_list<42, nullptr>
     list::remove<0>();
-    type_printer<list::item<0>>(); //nullptr_t
+    static_assert(list::item<0> == nullptr);
 }
 ```
