@@ -22,8 +22,10 @@
 
 #pragma once
 #include "println.hpp"
-#include "meta_tlist.hpp"
 
+#ifndef DONT_USE_META
+
+# include "meta_tlist.hpp"
 template <class T> void unit(T);
 
 namespace auto_testing
@@ -55,5 +57,47 @@ constexpr auto operator""_logger_string() {
     return (typename auto_testing::TestLogger<Char, chars...>::template pusher<>){};
 }
 
-#define new_unit(x) template <> void unit(decltype(x ## _logger_string))
-#define run_units_so_far() auto_testing::run(auto_testing::unit_list::current_type<>{})
+# define new_unit(x) template <> void unit(decltype(x ## _logger_string))
+# define run_units_so_far() auto_testing::run(auto_testing::unit_list::current_type<>{})
+
+#else /*DONT_USE_META*/
+
+namespace auto_testing
+{
+    template <class Char, Char... Chars>
+    struct TestLogger final
+    {
+        static constexpr Char repr[] = {Chars..., ':', '\0'};
+    };
+
+    template <size_t N, class Literal>
+    struct Number final
+    {
+        Number(std::integral_constant<size_t, N>)
+        {
+            if constexpr(N != 0) log::Println();
+            log::Println("TESTING", Literal::repr);
+        }
+    };
+
+    template <size_t... Indexs>
+    constexpr auto make_integral(std::index_sequence<Indexs...>) ->
+        std::tuple<std::integral_constant<size_t, Indexs>...>
+    {
+        return {};
+    }
+}
+
+template <class Char, Char... Chars>
+constexpr auto operator""_logger_string() -> auto_testing::TestLogger<Char, Chars...> {
+    return {};
+}
+
+# define new_unit(x)                                    \
+    void unit(auto_testing::Number<__COUNTER__, decltype(x ## _logger_string)>)
+
+# define run_units_so_far()                                             \
+    std::apply([](auto... args) { (unit(args), ...); },                 \
+               auto_testing::make_integral(std::make_index_sequence<__COUNTER__-1>{}));
+
+#endif /*DONT_USE_META*/
