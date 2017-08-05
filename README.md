@@ -5,7 +5,7 @@ a c++17 header library that implements variant constexpr functions and types.
 
 ### Test it online now with Coliru online g++ compiler
 <a href="http://coliru.stacked-crooked.com/a/1fc479c704674632">
-<img src="http://guillaume.belz.free.fr/lib/exe/fetch.php?media=minimal_1.png"/>
+<img src="https://img4.hostingpics.net/pics/733552layout.png"/>
 </a>
 
 __Disclaimer:__  
