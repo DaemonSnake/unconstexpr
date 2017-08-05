@@ -3,8 +3,10 @@
 #### An ODR violation story
 a c++17 header library that implements variant constexpr functions and types.
 
-### Test online now with Coliru online g++ compiler
-http://coliru.stacked-crooked.com/a/1fc479c704674632
+### Test it online now with Coliru online g++ compiler
+<a href="http://coliru.stacked-crooked.com/a/1fc479c704674632">
+<img src="http://guillaume.belz.free.fr/lib/exe/fetch.php?media=minimal_1.png"/>
+</a>
 
 __Disclaimer:__  
  * This project only targets __g++(7+)__ and is only for fun.  
