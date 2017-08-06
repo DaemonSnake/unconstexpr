@@ -93,11 +93,14 @@ constexpr auto operator""_logger_string() -> auto_testing::TestLogger<Char, Char
     return {};
 }
 
+template <size_t N>
+void unit(std::integral_constant<size_t, N>) {}
+
 # define new_unit(x)                                    \
     void unit(auto_testing::Number<__COUNTER__, decltype(x ## _logger_string)>)
 
 # define run_units_so_far()                                             \
     std::apply([](auto... args) { (unit(args), ...); },                 \
-               auto_testing::make_integral(std::make_index_sequence<__COUNTER__-1>{}));
+               auto_testing::make_integral(std::make_index_sequence<__COUNTER__>{}));
 
 #endif /*DONT_USE_META*/
