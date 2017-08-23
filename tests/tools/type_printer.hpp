@@ -112,10 +112,26 @@ namespace type_repr
         return stream;
     }
 
+    template <auto T, bool new_line = true>
+    struct ValuePrinter {};
+
+    template <auto T, bool new_line>
+    std::ostream& operator<<(std::ostream &stream, ValuePrinter<T, new_line>)
+    {
+        if constexpr (new_line) return stream << T << std::endl;
+        else return stream << T;
+    }
+
     template <class T = NoPrint, bool new_line = true>
     void type_printer()
     {
         std::cout << TypePrinter<T, new_line>();
+    }
+
+    template <auto T, bool new_line = true>
+    void type_printer()
+    {
+        std::cout << ValuePrinter<T, new_line>();
     }
 
     template <class T, bool new_line = true>
@@ -127,6 +143,12 @@ namespace type_repr
     auto make_type_printer()
     {
         return TypePrinter<T, new_line>();
+    }
+
+    template <auto T, bool new_line = false>
+    auto make_type_printer()
+    {
+        return ValuePrinter<T, new_line>();
     }
 }
 

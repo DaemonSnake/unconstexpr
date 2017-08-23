@@ -25,6 +25,7 @@
 #include "meta_tlist.hpp"
 #include "meta_vlist.hpp"
 #include "meta_any.hpp"
+#include "meta_map.hpp"
 
 using namespace unconstexpr;
 
@@ -139,6 +140,26 @@ new_unit("meta_any by value")
     println(*v, make_type_printer<decltype(*v)>());
     static_assert(std::is_same_v<std::string&, decltype(*v)>);
     std::cout << "\"operator<<\" test: " << v << std::endl;
+}
+
+#define SAME(x, y) std::is_same_v<x, y>
+
+new_unit("meta_map")
+{
+    using map = meta_map<>;
+
+    map::set<35, 25>();
+    map::set<25, int>();
+    map::set<long, 25>();
+    map::set<int, float>();
+    static_assert(std::is_same_v< map::get<META_KEY(35)>, META_KEY(25) >);
+    printType(map::get_by_value<35>::value);
+    static_assert(std::is_same_v< map::get<META_KEY(25)>, META_KEY(int) >);
+    printType(map::get_by_value<25>::value);
+    static_assert(std::is_same_v< map::get<META_KEY(long)>, META_KEY(25) >);
+    printType(map::get_by_class<long>::value);
+    static_assert(std::is_same_v< map::get<META_KEY(int)>, META_KEY(float) >);
+    printType(map::get_by_class<int>::value);
 }
 
 void unit_launcher()

@@ -43,5 +43,20 @@ namespace unconstexpr
             static_assert(sizeof(type) <= 1, "Lambda given captures values");
             return static_cast<const type*>(nullptr)->operator()(std::forward<Args>(args)...);
         }
+
+        template <class T>
+        struct type_holder
+        {
+            using value = T;
+        };
+
+        template <auto V>
+        struct value_holder
+        {
+            static constexpr auto value = V;
+        };
+        
+        template <class T> type_holder<T> template_holder();
+        template <auto V> value_holder<V> template_holder();
     }
 }
