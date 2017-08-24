@@ -55,20 +55,19 @@ namespace unconstexpr
             template <Type N>
             static constexpr Type reader(float, Flag<N>)
             {
-                return N - Step;
+                return N;
             }
 
         public:
-            template <Type = Writer<Start>::value>
             static constexpr Type value(Type r = reader(0, Flag<Start>{}))
             {
                 return r;
             }
 
             template <Type Value = value()>
-            static constexpr Type next(Type r = Writer<Value + Step>::value)
+            static constexpr Type next(Type r = Writer<Value>::value)
             {
-                return r;
+                return r + Step;
             }
         };
 
