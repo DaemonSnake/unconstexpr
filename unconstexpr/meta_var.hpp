@@ -50,10 +50,16 @@ namespace unconstexpr
             static constexpr Type value = V;
         };
 
+        template <int Index, Type R = adl_flag(Flag<Index>{})>
+        static constexpr Type reader(int) { return R; }
+
+        template <int Index>
+        static constexpr Type reader(float) { return Start; }
+
     public:
 
-        template <Type = Writer<Start, 0>::value, int Index = counter::value()>
-        static constexpr Type value(Type r = adl_flag(Flag<Index>{}))
+        template <int Index = counter::value()>
+        static constexpr Type value(Type r = reader<Index>(0))
         {
             return r;
         }
