@@ -26,6 +26,15 @@
 
 namespace unconstexpr
 {
+    namespace detail
+    {
+        template<class T>
+        struct ReturnTool
+        {
+            using type = T;
+        };
+    }
+    
     template <class StartType, class = void, unsigned = uniq_value::value<> >
     class meta_type
     {
@@ -42,7 +51,7 @@ namespace unconstexpr
         {
             friend constexpr auto adl_flag(Flag<N>)
             {
-                return NewType{};
+                return detail::ReturnTool<NewType>{};
             }
 
             using type = NewType;
@@ -59,7 +68,7 @@ namespace unconstexpr
     public:
         template <class = typename Writer<0, StartType>::type,
                   int Index = counter::value()>
-        using type = decltype(adl_flag(Flag<Index>{}));
+        using type = typename decltype(adl_flag(Flag<Index>{}))::type;
 
         template <class NewType, int Index = counter::value(),
                   int = Changer<NewType, Index>::change()>
