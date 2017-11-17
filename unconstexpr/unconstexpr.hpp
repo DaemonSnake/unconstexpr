@@ -22,7 +22,8 @@
 #pragma once
 
 #include "meta_counter.hpp"
-#include "meta_var.hpp"
+#include "meta_value.hpp"
+#include "meta_partial.hpp"
 #include "meta_type.hpp"
 #include "meta_tlist.hpp"
 #include "meta_vlist.hpp"

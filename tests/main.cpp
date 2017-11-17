@@ -19,12 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "meta_counter.hpp"
-#include "meta_var.hpp"
-#include "meta_type.hpp"
-#include "meta_tlist.hpp"
-#include "meta_vlist.hpp"
-#include "meta_any.hpp"
+#include "unconstexpr.hpp"
 using namespace unconstexpr;
 #include "tools/auto_testing.hpp"
 
@@ -33,11 +28,11 @@ void unit_launcher();
 int main ()
 {
     static_assert(!std::is_same_v<meta_counter<>, meta_counter<>>);
-    static_assert(!std::is_same_v<meta_var<int>, meta_var<int>>);
     static_assert(!std::is_same_v<meta_type<int>, meta_type<int>>);
     static_assert(!std::is_same_v<meta_tlist<>, meta_tlist<>>);
     static_assert(!std::is_same_v<meta_vlist<>, meta_vlist<>>);
     static_assert(!std::is_same_v<meta_any<int>, meta_any<int>>);
+    static_assert(!std::is_same_v<meta_value<>, meta_value<>>);
 
     unit_launcher();
 }
@@ -50,27 +45,6 @@ new_unit("meta_counter")
     println(counter::next());
     println(counter::next());
     println(counter::next());
-}
-
-new_unit("meta_var")
-{
-    using var = meta_var<int>;
-    
-    println(var::value());
-    var::set<5>();
-    static_assert(var::value() == 5);
-    println(var::value());
-    var::op<'+', 5>();
-    println(var::value());
-    static_assert(var::value() == 10);
-    var::op<'*', 2>();
-    println(var::value());
-    static_assert(var::value() == 20);
-    var::apply([](int i) {
-            return i * i;
-        });
-    println(var::value());
-    static_assert(var::value() == 400);
 }
 
 new_unit("meta_tlist")
@@ -107,23 +81,7 @@ new_unit("meta_vlist")
     // std::apply;
 }
 
-new_unit("meta_any by type")
-{
-    using v = meta_any<int>;
-
-    v::value<> = 5;
-    println(v::value<>);
-    printType(decltype(v::value<>));
-    
-    v::change<double>(3.14);
-    static_assert(std::is_same_v<double, decltype(v::value<>)>);
-    println(v::value<>);
-    printType(decltype(v::value<>));
-
-    println(v::change<int>(), make_type_printer<decltype(v::value<>)>());
-}
-
-new_unit("meta_any by value")
+new_unit("meta_any")
 {
     meta_any<int> v;
 
@@ -137,6 +95,33 @@ new_unit("meta_any by value")
     println(*v, make_type_printer<decltype(*v)>());
     static_assert(std::is_same_v<std::string&, decltype(*v)>);
     std::cout << "\"operator<<\" test: " << v << std::endl;
+}
+
+new_unit("meta_value")
+{
+    using type = unconstexpr::meta_value<>;
+    static_assert(type::value<> == false);
+    static_assert(std::is_same_v<type::type<>, std::false_type>);
+
+    constexpr type tmp = carg(42);
+    static_assert(*tmp == 42);
+    tmp += carg(3);
+    static_assert(*tmp == 45);
+    tmp -= carg(42);
+    static_assert(*tmp == 3);
+    tmp *= carg(3);
+    static_assert(*tmp == 9);
+    
+    static_assert(tmp.compiles());
+    tmp /= carg(0);
+    if constexpr(!tmp.compiles()) tmp.undo();
+    static_assert(*tmp == 9);
+
+    tmp = carg([]() { return 42; });
+    static_assert(tmp() == 42);
+    
+    tmp = carg(std::array{42, 314});
+    static_assert(tmp[1] == 314);
 }
 
 void unit_launcher()

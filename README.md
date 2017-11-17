@@ -21,7 +21,7 @@ static_assert(!std::is_same_v<meta_X<>, meta_X<>>, "Will not fire");
 
 ### compile time counter
 ```c++
-#include "inc/meta_counter.hpp"
+#include "unconstexpr/meta_counter.hpp"
 using namespace unconstexpr;
 
 int main()
@@ -32,9 +32,9 @@ int main()
     static_assert(i != counter::value(), "Will not fire");
 }
 ```
-### compile time type-safe any
+### compile time type-safe any (value not constexpr)
 ```c++
-#include "inc/meta_any.hpp"
+#include "unconstexpr/meta_any.hpp"
 using namespace unconstexpr;
 
 int main()
@@ -51,9 +51,44 @@ int main()
     std::cout << var << std::endl; //provides an operator<<
 }
 ```
+### constexpr typesafe any : meta_value
+```c++
+#include "unconstexpr/meta_value.hpp"
+using namespace unconstexpr;
+
+//carg(x) is a macro and is required for every assignation operation
+int main()
+{
+    using type = unconstexpr::meta_value<>;
+    static_assert(type::value<> == false);
+    static_assert(std::is_same_v<type::type<>, std::false_type>);
+
+    constexpr type tmp = carg(42);
+    static_assert(*tmp == 42);
+    tmp += carg(3);
+    static_assert(*tmp == 45);
+    tmp -= carg(42);
+    static_assert(*tmp == 3);
+    tmp *= carg(3);
+    static_assert(*tmp == 9);
+    
+    static_assert(tmp.compiles());
+    tmp /= carg(0);
+    if constexpr(!tmp.compiles())
+      tmp.undo();
+    static_assert(*tmp == 9);
+
+    tmp = carg([]() { return 42; });
+    static_assert(tmp() == 42);
+    
+    tmp = carg(std::array{42, 314});
+    static_assert(tmp[1] == 314);
+}
+```
+
 ### partial class definition
 ```c++
-#include "inc/meta_partial.hpp"
+#include "unconstexpr/meta_partial.hpp"
 using namespace unconstexpr;
 
 using A = partial_it<>;
@@ -91,32 +126,10 @@ void func()
    (void)tmp.k;
 }
 ```
-### compile time variant variable
-```c++
-#include "inc/meta_var.hpp"
-using namespace unconstexpr;
-
-int main()
-{
-    using var = meta_var<int>;
-    
-    static_assert(var::value() == 0);
-    var::set<5>();
-    static_assert(var::value() == 5);
-    var::op<'+', 5>();
-    static_assert(var::value() == 10);
-    var::op<'*', 2>();
-    static_assert(var::value() == 20);
-    var::apply([](int i) {
-            return i * i;
-        });
-    static_assert(var::value() == 20*20);
-}
-```
 
 ## compile time variant type list
 ```c++
-#include "inc/meta_tlist.hpp"
+#include "unconstexpr/meta_tlist.hpp"
 using namespace unconstexpr;
 
 int main()
@@ -134,7 +147,7 @@ int main()
 
 ## compile time value type list
 ```c++
-#include "inc/meta_vlist.hpp"
+#include "unconstexpr/meta_vlist.hpp"
 using namespace unconstexpr;
 
 int main()
