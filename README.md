@@ -51,6 +51,46 @@ int main()
     std::cout << var << std::endl; //provides an operator<<
 }
 ```
+### partial class definition
+```c++
+#include "inc/meta_partial.hpp"
+using namespace unconstexpr;
+
+using A = partial_it<>;
+
+template<>
+struct partial<A>
+{
+   int i;
+};
+
+template<>
+struct partial<A>
+{
+   int j;
+};
+
+int main()
+{
+   partial_t<A> tmp;
+   (void)tmp.i;
+   (void)tmp.j;
+}
+
+template<>
+struct partial<A>
+{
+   int k;
+};
+
+void func()
+{
+   partial_t<A> tmp;
+   (void)tmp.i;
+   (void)tmp.j;
+   (void)tmp.k;
+}
+```
 ### compile time variant variable
 ```c++
 #include "inc/meta_var.hpp"
