@@ -113,7 +113,7 @@ int main()
 }
 
 template<>
-struct partial<A>
+struct unconstexpr::partial<A>
 {
    int k;
 };
