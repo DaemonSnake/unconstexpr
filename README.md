@@ -94,13 +94,13 @@ using namespace unconstexpr;
 using A = partial_it<>;
 
 template<>
-struct partial<A>
+struct unconstexpr::partial<A>
 {
    int i;
 };
 
 template<>
-struct partial<A>
+struct unconstexpr::partial<A>
 {
    int j;
 };
