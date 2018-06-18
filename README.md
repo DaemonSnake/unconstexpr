@@ -9,7 +9,7 @@ a c++17 header library that implements variant constexpr functions and types.
 </a>
 
 __Disclaimer:__  
- * This project only targets __g++(7+)__ and is only for fun.  
+ * This project only targets __g++7__ and is only for fun.  
  * It is inspired by Filip Roséen's blog http://b.atch.se/.  
  * His blog is great go check it out for a c++ standart compilant implementation of some of the features of this library.  
 
